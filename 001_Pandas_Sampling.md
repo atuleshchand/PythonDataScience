@@ -9,9 +9,12 @@
 ```python
 import pandas as pd
 
-# Assuming df is your DataFrame
 df = pd.read_csv('bike.csv')
-sampled_data = df.sample(n=10)  # This will pick 10 random rows from the DataFrame df
+
+# This will pick 10 random sample from the data frame
+simple_random_sample = df.sample(n = 10)
+
+simple_random_sample
 ```
 
 ### 2) Stratified Random Sampling:
@@ -21,10 +24,28 @@ sampled_data = df.sample(n=10)  # This will pick 10 random rows from the DataFra
 
 **Pandas Implementation:**
 ```python
+import pandas as pd
+import numpy as np
+
+# Create a sample dataset
+np.random.seed(42)  # for reproducibility
+data = {
+    'ID': range(1, 101),
+    'Age': np.random.randint(18, 30, 100),
+    'Gender': np.random.choice(['Male', 'Female'], 100),
+    'State': np.random.choice(['StateA', 'StateB', 'StateC', 'StateD', 'StateE'], 100)
+}
+df1 = pd.DataFrame(data)
+df1.head()
+```
+
+```python
 from sklearn.model_selection import train_test_split
 
-# Assuming df is your DataFrame and 'gender' is the column you want to stratify on
-train, sampled_data = train_test_split(df, test_size=0.2, stratify=df['gender'])
+training_data, sample_data = train_test_split(df1, test_size=0.1, stratify=df1['Gender'])
+
+print(training_data)
+print(sample_data)
 ```
 
 ### 3) Systematic Sampling:
@@ -35,7 +56,11 @@ train, sampled_data = train_test_split(df, test_size=0.2, stratify=df['gender'])
 **Pandas Implementation:**
 ```python
 k = 10
-sampled_data = df.iloc[::k, :]
+
+#systematic_sample_data = df1.iloc[::k, :]
+systematic_sample_data = df1.iloc[0:100:k, :]
+
+systematic_sample_data
 ```
 
 ### 4) Cluster Sampling:
@@ -45,9 +70,12 @@ sampled_data = df.iloc[::k, :]
 
 **Pandas Implementation:** This is a bit more involved since you'd first group your data into clusters and then sample from those clusters.
 ```python
-# Assuming df is your DataFrame and 'state' is your clustering column
-clusters = df.groupby('state')
-selected_clusters = clusters.sample(n=5)
-sampled_data = df[df['state'].isin(selected_clusters.index)]
+# Sample 2 states randomly
+selected_states = np.random.choice(df1['State'].unique(), 2, replace=False)
+
+# Select all rows that belong to the 2 randomly selected states
+sampled_data = df1[df1['State'].isin(selected_states)]
+
+sampled_data.head()
 ```
 
